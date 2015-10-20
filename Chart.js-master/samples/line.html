@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Line Chart</title>
+		<script src="../Chart.js"></script>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+		<script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.5.0.min.js"></script>
+	</head>
+	<body>
+		<div style="width:30%">
+			<div>
+				<canvas id="canvas" height="450" width="600"></canvas>
+			</div>
+		</div>
+
+
+	<script>
+		
+		
+		var randomScalingFactor = function(){ return Math.round(Math.random()*100)};
+		var lineChartData = {
+			labels :  [],
+			datasets : [
+				{
+					label: "X",
+					fillColor : "rgba(220,100,150,0)",
+					strokeColor : "rgba(220,100,150,1)",
+					pointColor : "rgba(220,100,150,1)",
+					pointStrokeColor : "#fff",
+					pointHighlightFill : "#fff",
+					pointHighlightStroke : "rgba(220,220,220,1)",
+					data : []
+				},
+				{
+					label: "Y",
+					fillColor : "rgba(101,187,205,0)",
+					strokeColor : "rgba(101,187,205,1)",
+					pointColor : "rgba(101,187,205,1)",
+					pointStrokeColor : "#fff",
+					pointHighlightFill : "#fff",
+					pointHighlightStroke : "rgba(151,187,205,1)",
+					data : []
+				},
+				{
+					label: "Z",
+					fillColor : "rgba(100,187,100,0)",
+					strokeColor : "rgba(100,187,100,1)",
+					pointColor : "rgba(100,187,100,1)",
+					pointStrokeColor : "#fff",
+					pointHighlightFill : "#fff",
+					pointHighlightStroke : "rgba(151,187,205,1)",
+					data : []
+				}
+			]
+
+		}
+		
+		Parse.initialize("EWZKeQMtXnwwtnqu4fScLfhUxMPHU9pRU5dzdF6m", "Vfge2ONWyV3N8lO8FzSdPyvYad86drRLnZQ4SS36");
+
+    var accelerometer = Parse.Object.extend("accelerometer");
+		var query = new Parse.Query(accelerometer);
+		query.skip(60);
+		query.limit(100);
+		query.find({
+			success: function(results) {
+
+				for (var i = 0; i < results.length; i++) {
+					var object = results[i];
+					lineChartData.labels[i] = i;
+					lineChartData.datasets[0].data[i] = object.get('X');
+					lineChartData.datasets[1].data[i] = object.get('Y');
+					lineChartData.datasets[2].data[i] = object.get('Z');
+
+				}
+				var ctx = document.getElementById("canvas").getContext("2d");
+				ctx.canvas.width = 1500;
+				ctx.canvas.height = 500;
+				window.myLine = new Chart(ctx).Line(lineChartData, {
+				responsive: false
+		});
+			},
+			error: function(error) {
+				alert("Error: " + error.code + " " + error.message);
+			}
+		});
+
+	window.onload = function(){
+		
+	}
+
+
+	</script>
+	</body>
+</html>
